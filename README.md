@@ -1,20 +1,21 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Hybrid RAG Explorer
 
-# Run and deploy your AI Studio app
+Uma demonstração de RAG Híbrido combinando busca vetorial (Semântica) com filtragem estruturada (SQL) para resultados precisos.
 
-This contains everything you need to run your app locally.
+## Resumo Técnico da Arquitetura
 
-View your app in AI Studio: https://ai.studio/apps/drive/1qYGx96ZKNKROMS7kqSeLmezvBueVozga
+Aqui está um resumo técnico da arquitetura implementada e ativa nesta aplicação:
 
-## Run Locally
+### Frontend (React + Vite)
+*   Gerencia o estado da aplicação e a visualização do pipeline.
+*   Simula o "Banco de Dados" (lógica SQLite) filtrando IDs localmente.
+*   Realiza a matemática vetorial (Similaridade de Cosseno) no navegador para demonstrar transparência no cálculo.
 
-**Prerequisites:**  Node.js
+### Backend (Vercel Serverless Functions)
+*   `/api/embed`: Cria os vetores usando o modelo `text-embedding-004`. Protege a API Key, garantindo que ela nunca seja vazada para o navegador.
+*   `/api/generate`: Gera a resposta final usando o `gemini-3-flash-preview`, recebendo apenas o contexto filtrado e validado.
 
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+### Fluxo Híbrido
+*   A aplicação primeiro busca por **significado** (Vetor).
+*   Depois, aplica uma restrição rígida de **negócio** (SQL/Client ID).
+*   O Gemini só vê os dados que satisfazem **ambas** as condições, reduzindo alucinações e vazamento de dados entre clientes.
