@@ -36,9 +36,6 @@ const INITIAL_DATA: Omit<Document, 'embedding'>[] = [
   }
 ];
 
-// Helper to simulate a "Wait" for UI effect
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
 class MockDatabaseService {
   private documents: Document[] = [];
   private isInitialized = false;
@@ -64,9 +61,9 @@ class MockDatabaseService {
     for (const doc of this.documents) {
       if (!doc.embedding) {
         onProgress(`Indexando Doc ID ${doc.id}...`);
-        // Add a small delay to avoid rate limits in demo
-        await delay(500); 
+        
         try {
+            // Real network call to Vercel API -> Gemini
             const embedding = await getEmbedding(doc.content);
             docsWithEmbeddings.push({ ...doc, embedding });
         } catch (e) {
